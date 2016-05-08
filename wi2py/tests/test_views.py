@@ -11,7 +11,7 @@ class FileViewTests(unittest.TestCase):
         testing.tearDown()
 
     def _getFUT(self):
-        from virginia.views import file_view
+        from wi2py.views import file_view
         return file_view
 
     def test___call__(self):
@@ -32,7 +32,7 @@ class DirectoryViewTests(unittest.TestCase):
         testing.tearDown()
 
     def _getFUT(self):
-        from virginia.views import directory_view
+        from wi2py.views import directory_view
         return directory_view
 
     def _getEnviron(self, **kw):
@@ -68,7 +68,7 @@ class DirectoryViewTests(unittest.TestCase):
         environ = self._getEnviron()
         request = testing.DummyRequest(environ=environ)
         result = view(context, request)
-        self.assertEqual(result.app_iter, ['No default view for /'])
+        self.assertEqual(result.app_iter, [b'No default view for /'])
 
     def test___call___redirects_to_slash(self):
         context = DummyDirectory('/',{})
@@ -81,7 +81,7 @@ class DirectoryViewTests(unittest.TestCase):
 
 class StructuredTextViewTests(unittest.TestCase):
     def _getFUT(self):
-        from virginia.views import structured_text_view
+        from wi2py.views import structured_text_view
         return structured_text_view
 
     def test___call__(self):
@@ -89,7 +89,7 @@ class StructuredTextViewTests(unittest.TestCase):
         context.source = 'abcdef'
         response = self._getFUT()(context, None)
         self.assertEqual(response.app_iter,
-                         ['<html>\n<body>\n<p>abcdef</p>\n</body>\n</html>\n']
+                         [b'<html>\n<body>\n<p>abcdef</p>\n</body>\n</html>\n']
                          )
         headers = response.headerlist
         self.assertEqual(headers[0],
@@ -101,14 +101,14 @@ class StructuredTextViewTests(unittest.TestCase):
 
 class RawViewTests(unittest.TestCase):
     def _getFUT(self):
-        from virginia.views import raw_view
+        from wi2py.views import raw_view
         return raw_view
 
     def test___call__(self):
         context = DummyFile('/foo/bar.txt')
         context.source = 'abcdef'
         response = self._getFUT()(context, None)
-        self.assertEqual(response.app_iter, ['abcdef'])
+        self.assertEqual(response.app_iter, [b'abcdef'])
         headers = response.headerlist
         self.assertEqual(headers[0],
                          ('Content-Length', '6')

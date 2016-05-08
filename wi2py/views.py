@@ -27,7 +27,6 @@ from wi2py.models import Directory
 
 @view_config(context=File)
 def file_view(context, request):
-    print("File  view called")
     dirname, filename = os.path.split(context.path)
     name, ext = os.path.splitext(filename)
     result = render_view_to_response(context, request, ext)
@@ -35,7 +34,6 @@ def file_view(context, request):
 
 @view_config(context=Directory)
 def directory_view(context, request):
-    print("Dir view called")
     path_info = request.environ['PATH_INFO']
     if not path_info.endswith('/'):
         response = HTTPFound(location=path_info + '/')
@@ -58,7 +56,6 @@ def directory_view(context, request):
 def structured_text_view(context, request):
     """ Filesystem-based STX view
     """
-    print("Structured Text view  called")
     result = stx2html(context.source)
     response = Response(result)
     response.content_type = 'text/html'
@@ -71,7 +68,6 @@ def structured_text_view(context, request):
 def raw_view(context, request):
     """ Just return the source raw.
     """
-    print("raw view called")
     response = Response(context.source)
     dirname, filename = os.path.split(context.path)
     name, ext = os.path.splitext(filename)

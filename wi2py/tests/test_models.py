@@ -2,7 +2,7 @@ import unittest
 
 class FilesystemTests(unittest.TestCase):
     def _getTargetClass(self):
-        from virginia.models import Filesystem
+        from wi2py.models import Filesystem
         return Filesystem
 
     def _makeOne(self, *arg, **kw):
@@ -13,10 +13,10 @@ class FilesystemTests(unittest.TestCase):
         import os
         import tempfile
         f = tempfile.NamedTemporaryFile()
-        f.write('hello')
+        f.write(bytes('hello','UTF-8'))
         f.flush()
         fs = self._makeOne(os.path.abspath(os.path.dirname(f.name)))
-        self.assertEqual(fs.open(f.name).read(), 'hello')
+        self.assertEqual(fs.open(f.name).read(), b'hello')
         f.close()
 
     def test_open_denies(self):
@@ -31,15 +31,15 @@ class FilesystemTests(unittest.TestCase):
         import os
         import tempfile
         f = tempfile.NamedTemporaryFile()
-        f.write('hello')
+        f.write(bytes('hello','UTF-8'))
         f.flush()
         fs = self._makeOne(os.path.dirname(f.name))
-        self.assertEqual(fs.open(f.name).read(), 'hello')
+        self.assertEqual(fs.open(f.name).read(), b'hello')
         f.close()
 
 class DirectoryTests(unittest.TestCase):
     def _getTargetClass(self):
-        from virginia.models import Directory
+        from wi2py.models import Directory
         return Directory
 
     def _makeOne(self, *arg, **kw):
@@ -52,7 +52,7 @@ class DirectoryTests(unittest.TestCase):
         fs = DummyFilesystem(links, files)
         directory = self._makeOne(fs, '/foo')
         result = directory['bar']
-        from virginia.models import File
+        from wi2py.models import File
         self.failUnless(isinstance(result, File))
         self.assertEqual(result.path, '/foo/baz')
 
@@ -66,7 +66,7 @@ class DirectoryTests(unittest.TestCase):
         fs = DummyFilesystem(dirs=['/foo/dir'])
         directory = self._makeOne(fs, '/foo')
         result = directory['dir']
-        from virginia.models import Directory
+        from wi2py.models import Directory
         self.failUnless(isinstance(result, Directory))
         self.assertEqual(result.path, '/foo/dir')
 
@@ -74,13 +74,13 @@ class DirectoryTests(unittest.TestCase):
         fs = DummyFilesystem(files=['/foo/file'])
         directory = self._makeOne(fs, '/foo')
         result = directory['file']
-        from virginia.models import File
+        from wi2py.models import File
         self.failUnless(isinstance(result, File))
         self.assertEqual(result.path, '/foo/file')
 
 class FileTests(unittest.TestCase):
     def _getTargetClass(self):
-        from virginia.models import File
+        from wi2py.models import File
         return File
 
     def _makeOne(self, *arg, **kw):
@@ -90,12 +90,12 @@ class FileTests(unittest.TestCase):
     def test_source(self):
         import tempfile
         named = tempfile.NamedTemporaryFile()
-        named.write('silly')
+        named.write(bytes('silly','UTF-8'))
         named.flush()
         name = named.name
         fs = DummyFilesystem()
         f = self._makeOne(fs, name)
-        self.assertEqual(f.source, 'silly')
+        self.assertEqual(f.source,b'silly')
         named.close()
     
 class DummyFilesystem:
